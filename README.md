@@ -1,22 +1,23 @@
-# BondMCP: One Language for Your Body, Doctors, and AI - Vision & Thought Leadership
+# BondMCP Public Documentation
 
-Welcome to the official documentation hub for BondMCP, a revolutionary medical AI protocol designed to create a universal language for health. Our mission is to empower individuals, clinicians, and AI systems with seamless, intelligent, and secure access to health insights.
+This repository contains public-facing documentation for the BondMCP project, including vision, product overviews, and general information.
 
-This repository contains materials that outline our vision, the core concepts behind BondMCP, and our thought leadership in the rapidly evolving field of agent-powered health.
+For detailed technical documentation or to contribute to the core project, please refer to the main BondMCP repository (access may be restricted).
 
-## Our Vision
+## Navigation
 
-We envision a future where health information is not siloed but flows freely and intelligently between patients, their care providers, and the AI tools that can unlock profound insights. BondMCP aims to be the foundational layer for this new era of personalized, proactive, and participatory healthcare.
+Please refer to the `docs` directory for specific documents:
+- `docs/README.md`: Main entry point for the documentation.
+- `docs/SUMMARY.md`: Table of contents for GitBook navigation.
+- `docs/vision.md`: Outlines the vision of the BondMCP project.
+- `docs/agent_powered_health.md`: Describes the agent-powered health paradigm.
+- `docs/protocol_overview.md`: Provides a high-level overview of the BondMCP protocol.
+- `docs/analysis.md`: Placeholder for analysis documents.
+- `docs/data.md`: Placeholder for data-related documents.
+- `docs/health.md`: Placeholder for health-specific information.
+- `docs/users.md`: Placeholder for user-related documentation.
 
-Explore the documents in this repository to learn more about:
+## GitBook Integration
 
-*   **[The BondMCP Vision](./vision.md):** Delve deeper into our long-term goals and the impact we aim to make.
-*   **[Agent-Powered Health: A New Paradigm](./agent_powered_health.md):** Discover how intelligent agents, powered by protocols like BondMCP, are set to transform healthcare delivery and personal wellness.
-*   **[The BondMCP Protocol: A High-Level Overview](./protocol_overview.md):** Understand the fundamental principles and architecture of BondMCP from a conceptual standpoint.
-
-We are at the forefront of building a trusted, transparent, and transformative medical AI ecosystem. Join us on this journey to redefine the future of health.
-
----
-
-*For developer-focused documentation, technical specifications, and source code, please visit our main project repository (details to be provided separately for private/internal access where applicable).*
+This repository is intended to be integrated with GitBook for a user-friendly documentation experience. The `.gitbook.yaml` file and the `docs/SUMMARY.md` file are used to configure this integration.
 

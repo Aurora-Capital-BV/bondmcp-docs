@@ -1,10 +1,4 @@
-# health
+# Health
 
+This section will focus on health-related topics within the BondMCP project.
 
-
-
-
-
-{% swagger src="./.gitbook/assets/openapi.yaml" path="/health" method="get" %}
-[openapi.yaml](<./.gitbook/assets/openapi.yaml>)
-{% endswagger %}
