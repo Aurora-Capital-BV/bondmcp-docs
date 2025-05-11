@@ -1,284 +1,156 @@
 openapi: 3.0.0
 info:
   title: BondMCP API
-  version: v1
-  description: API for the BondMCP application, providing access to medical data and
-    AI-powered insights.
+  version: v0.1.0
+  description: |
+    API for the BondMCP (Medical Common Protocol) project.
+    Provides access to health insights, data ingestion, and medical AI functionalities.
+    This is a preliminary specification and will be updated as the API evolves.
   contact:
-    email: support@bondmcp.com
+    name: BondMCP Team
+    url: https://bondmcp.com
+    email: info@auroracapital.nl
+
 servers:
-- url: https://api.bondmcp.com
-  description: Production server
+  - url: https://api.bondmcp.com/v0
+    description: Production API Server (v0)
+
+paths:
+  /ingest/oura:
+    post:
+      summary: Ingest Oura Ring data from CSV
+      description: Allows users to upload their Oura Ring data in CSV format for processing and insight generation.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Oura Ring data CSV file.
+      responses:
+        '202':
+          description: Data ingestion accepted for processing.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                    example: "Oura data received and queued for processing."
+                  ingestion_id:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426614174000"
+        '400':
+          description: Bad request (e.g., invalid file format).
+        '401':
+          description: Unauthorized.
+
+  /insights/health:
+    get:
+      summary: Get personalized health insights
+      description: Retrieves personalized health insights based on the user's ingested data.
+      parameters:
+        - name: user_id
+          in: query
+          required: true
+          description: The unique identifier for the user.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful retrieval of health insights.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: string
+                  insights:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          example: "sleep_quality"
+                        summary:
+                          type: string
+                          example: "Your sleep quality has improved by 10% this week."
+                        recommendations:
+                          type: array
+                          items:
+                            type: string
+                          example: ["Consider reducing screen time before bed.", "Try a consistent sleep schedule."]
+        '401':
+          description: Unauthorized.
+        '404':
+          description: User not found or no insights available.
+
+  /labs/upload:
+    post:
+      summary: Upload lab results
+      description: Allows uploading of lab results (e.g., bloodwork) in a structured format or PDF.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                lab_data: 
+                  type: object # Or string for PDF base64, or multipart/form-data for file upload
+                  description: Structured lab data or reference to uploaded file.
+          # multipart/form-data: (Alternative for direct file upload)
+          #   schema:
+          #     type: object
+          #     properties:
+          #       user_id:
+          #         type: string
+          #       file:
+          #         type: string
+          #         format: binary
+      responses:
+        '202':
+          description: Lab results accepted for processing.
+        '400':
+          description: Bad request.
+
+  /supplements/recommendations:
+    get:
+      summary: Get supplement recommendations
+      description: Provides supplement recommendations based on user data and goals.
+      parameters:
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful retrieval of supplement recommendations.
+          content:
+            application/json:
+              schema:
+                type: object # Define schema for recommendations
+        '401':
+          description: Unauthorized.
+
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
 security:
-- bearerAuth: []
-paths:
-  /health:
-    get:
-      summary: Health Check
-      description: Checks the health status of the API.
-      responses:
-        '200':
-          description: Healthy
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: healthy
-        '503':
-          description: Service Unavailable
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: unhealthy
-      tags:
-      - health
-  /users:
-    post:
-      summary: Create User
-      description: Creates a new user account.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                email:
-                  type: string
-                  format: email
-                password:
-                  type: string
-                  format: password
-      responses:
-        '201':
-          description: User created successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  userId:
-                    type: string
-                  username:
-                    type: string
-                  email:
-                    type: string
-                  message:
-                    type: string
-        '400':
-          description: Invalid input or user already exists
-      tags:
-      - users
-  /users/{userId}:
-    get:
-      summary: Get User Details
-      description: Retrieves details for a specific user.
-      parameters:
-      - name: userId
-        in: path
-        required: true
-        description: The ID of the user.
-        schema:
-          type: string
-      responses:
-        '200':
-          description: User details retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  userId:
-                    type: string
-                  username:
-                    type: string
-                  email:
-                    type: string
-                  createdAt:
-                    type: string
-                    format: date-time
-        '404':
-          description: User not found
-      tags:
-      - users
-  /data/upload:
-    post:
-      summary: Upload Medical Data
-      description: Allows authenticated users to upload medical data.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                dataType:
-                  type: string
-                  example: blood_pressure
-                data:
-                  type: string
-                  description: Encrypted data string
-                timestamp:
-                  type: string
-                  format: date-time
-      responses:
-        '201':
-          description: Data uploaded successfully
-        '400':
-          description: Invalid data format or missing fields
-        '401':
-          description: Unauthorized
-      tags:
-      - data
-  /data/retrieve:
-    get:
-      summary: Retrieve Medical Data
-      description: Allows authenticated users to retrieve their medical data.
-      parameters:
-      - name: dataType
-        in: query
-        required: false
-        description: Filter by data type (e.g., "blood_pressure", "heart_rate").
-        schema:
-          type: string
-      - name: startDate
-        in: query
-        required: false
-        description: Filter data from this date (YYYY-MM-DD).
-        schema:
-          type: string
-          format: date
-      - name: endDate
-        in: query
-        required: false
-        description: Filter data up to this date (YYYY-MM-DD).
-        schema:
-          type: string
-          format: date
-      responses:
-        '200':
-          description: Medical data retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        dataType:
-                          type: string
-                        value:
-                          type: string
-                        timestamp:
-                          type: string
-                          format: date-time
-        '401':
-          description: Unauthorized
-        '404':
-          description: No data found
-      tags:
-      - data
-  /analysis/request:
-    post:
-      summary: Request AI Analysis
-      description: Submits user data for AI-powered analysis.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                userId:
-                  type: string
-                dataPoints:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      metric:
-                        type: string
-                      value:
-                        type: string
-                      timestamp:
-                        type: string
-                        format: date-time
-                analysisType:
-                  type: string
-                  example: preventative_health_check
-      responses:
-        '202':
-          description: Request accepted for processing
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  requestId:
-                    type: string
-                  status:
-                    type: string
-                    example: processing
-                  message:
-                    type: string
-        '400':
-          description: Invalid input data
-      tags:
-      - analysis
-  /analysis/results/{requestId}:
-    get:
-      summary: Get Analysis Results
-      description: Retrieves the results of a previously submitted analysis request.
-      parameters:
-      - name: requestId
-        in: path
-        required: true
-        description: The ID of the analysis request.
-        schema:
-          type: string
-      responses:
-        '200':
-          description: Analysis complete
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  requestId:
-                    type: string
-                  status:
-                    type: string
-                    example: completed
-                  summary:
-                    type: string
-                  recommendations:
-                    type: array
-                    items:
-                      type: string
-                  detailedReportLink:
-                    type: string
-                    format: url
-        '202':
-          description: Analysis still in progress
-        '404':
-          description: Request ID not found
-      tags:
-      - analysis
+  - bearerAuth: []
+
