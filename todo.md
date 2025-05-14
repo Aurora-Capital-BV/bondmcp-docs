@@ -1,10 +1,10 @@
-# BondMCP Documentation - To Do
+# BondMCP Documentation - Maintenance To-Do
 
-- [ ] Finalize content for all sections in README.md.
-- [ ] Ensure all API endpoint details are accurate and complete based on openapi.json.
-- [ ] Add detailed usage examples for key API endpoints.
-- [ ] Document SDK installation and usage (if applicable).
-- [ ] Review and update infrastructure documentation (Terraform).
-- [ ] Verify all diagrams and architectural explanations are current.
-- [ ] Add a comprehensive changelog.
-- [ ] Perform a final proofread and review for clarity and consistency.
+- [ ] Regularly review and update API endpoint specifications based on `app/main.py` and the generated OpenAPI schema.
+- [ ] Ensure all code examples in the documentation are functional and up-to-date with any API changes.
+- [ ] Update the "Core Features" section as new features are added or existing ones are modified in the BondMCP application.
+- [ ] Keep the "AWS Infrastructure" and "Terraform" sections aligned with any changes in the deployment architecture.
+- [ ] Periodically verify all external links and references in the documentation.
+- [ ] Update SDK information as new SDKs are released or existing ones are updated.
+- [ ] Incorporate user feedback and address any reported inaccuracies or areas needing clarification.
+- [ ] Maintain the Changelog with each new release or significant update.
