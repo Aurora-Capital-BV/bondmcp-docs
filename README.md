@@ -41,10 +41,21 @@ Welcome to the BondMCP (Model Context Protocol + Trust Layer for Health AI) proj
 BondMCP is a comprehensive platform designed to transform complex and often unstructured health data into validated, actionable decisions. The core mission of BondMCP is to provide a unified "language" that can be understood and trusted by diverse systems, including wearables, hospital EMRs, consumer health applications, and laboratory information systems. By enforcing rigorous cross-model validation (utilizing a minimum of three Large Language Models), semantic grounding through verifiable sources, and offering public APIs, BondMCP aims to become the internet's trust layer for health. This ensures that insights and recommendations derived from health data are not only intelligent but also reliable and precise, fostering greater confidence in AI-driven healthcare solutions.
 
 ### Key Domains
-The BondMCP ecosystem is primarily accessed through distinct domains:
-*   `api.bondmcp.com`: Serves as the developer portal, offering an API explorer, downloadable SDKs, demonstrations of Retrieval Augmented Generation (RAG) capabilities, and comprehensive documentation.
-*   `my.bondmcp.com`: Provides a user interface demonstration, including an AI-powered health chat, an API sandbox environment for testing, billing management, and API key generation.
-*   `bondmcp.com`: Functions as the main marketing and informational website, featuring product details, a waitlist for new users, and onboarding materials.
+**Unified Developer Portal: `api.bondmcp.com`**
+Moving forward, `api.bondmcp.com` will serve as the single, unified developer command center. It will consolidate all developer-facing functionalities, including:
+*   Comprehensive API documentation and an interactive API explorer (Swagger UI/OpenAPI).
+*   Downloadable Software Development Kits (SDKs).
+*   Demonstrations of core capabilities, including Retrieval Augmented Generation (RAG).
+*   An interactive API sandbox/playground for live testing of endpoints.
+*   Developer account registration and management (integrated with AWS Cognito).
+*   API key generation and management.
+*   Billing and subscription management.
+
+**Marketing and Information: `bondmcp.com`**
+*   This domain will continue to function as the main marketing and informational website, featuring product details, thought leadership content, and general company information.
+
+**Deprecation Notice: `my.bondmcp.com`**
+*   The domain `my.bondmcp.com`, which previously hosted the user interface demonstration, AI-powered health chat, API sandbox, billing, and API key generation, is being deprecated. All its functionalities are being merged into the unified `api.bondmcp.com` portal. Users should transition to using `api.bondmcp.com` for all developer-related activities.
 
 ## 2. System Architecture
 
@@ -57,9 +68,9 @@ The backend of BondMCP is built using FastAPI, a modern, high-performance Python
 Key backend responsibilities include API endpoint management, Trust Layer logic implementation, data processing and orchestration (including calls to LLMs via AWS Bedrock), database interaction with Aurora PostgreSQL (using pgvector), and integration with AWS Cognito for authentication.
 
 ### Frontend Applications (Next.js)
-The primary frontend for user interaction (`my.bondmcp.com`) and the developer portal (`api.bondmcp.com`) are built as Next.js applications. Next.js, a React framework, enables server-side rendering and static site generation. The frontend utilizes TypeScript, MagicUI, 21dev components, TailwindCSS, and ShadCN/UI.
+The primary frontend for all developer interactions, including the developer portal, API playground, account management, and API key generation, is `api.bondmcp.com`. This unified portal is built as a Next.js application. Next.js, a React framework, enables server-side rendering and static site generation. The frontend utilizes TypeScript, MagicUI, 21dev components, TailwindCSS, and ShadCN/UI.
 
-Key frontend aspects include UI components, API interaction, state management, an interactive API playground, and rendering of Markdown-based documentation (MDX).
+Key frontend aspects include UI components for the developer portal, API interaction, state management, an interactive API playground, user account and billing management interfaces, and rendering of Markdown-based documentation (MDX).
 
 ### AWS Infrastructure
 BondMCP leverages a comprehensive suite of AWS services:
@@ -91,12 +102,13 @@ BondMCP offers a suite of powerful features designed to provide trusted, AI-driv
 ### Accessing the API
 The BondMCP API provides programmatic access to its suite of health AI features. The API is designed following RESTful principles and uses JSON for request and response bodies. Comprehensive, interactive API documentation is available via the embedded OpenAPI specification (Swagger UI) on the `api.bondmcp.com` developer portal.
 
-**Important Note on OpenAPI Specification:** The definitive OpenAPI schema for BondMCP is generated by its FastAPI application. While an `openapi.json` file exists in the root of the `bondmcp_repo_clone` repository, initial analysis suggests it might be a placeholder or related to a different service (e.g., LangSmith). For accurate API development and documentation, always refer to the OpenAPI schema exposed by the live `api.bondmcp.com` service (typically at `/openapi.json` or `/docs`) or the schema generated directly from the BondMCP FastAPI application code (e.g., within `app/main.py` or related API routing modules). This documentation will be updated to reflect the true BondMCP API schema once it is definitively identified and parsed.
+**Important Note on OpenAPI Specification:** The definitive OpenAPI schema for BondMCP is generated dynamically by its FastAPI application. For the most accurate and up-to-date API development and documentation, always refer to the OpenAPI schema exposed by the live `api.bondmcp.com` service (typically accessible at a `/openapi.json`, `/docs`, or `/redoc` path) or the schema generated directly from the BondMCP FastAPI application's source code. This documentation aims to reflect this live schema.
 
 ### Authentication (Cognito & API Keys)
-Access to the BondMCP API is secured using API keys and OAuth2 through AWS Cognito.
-*   **API Keys:** For server-to-server communication, include the API key in the `X-API-Key` HTTP header. These keys are generated via the `my.bondmcp.com` portal.
-*   **OAuth2 (Cognito):** For user-centric flows, BondMCP utilizes AWS Cognito. Authenticated users receive JWTs (ID and Access Tokens) which should be sent as a Bearer token in the `Authorization` HTTP header. Detailed OAuth2 flow information is available via the Cognito User Pool configuration and the developer portal.
+Access to the BondMCP API is secured using API keys and OAuth2 through AWS Cognito. All related management tasks, including API key generation and Cognito user account management, are handled within the unified `api.bondmcp.com` developer portal.
+
+*   **API Keys:** For server-to-server communication, include the API key in the `X-API-Key` HTTP header. These keys are generated and managed via your developer account on the `api.bondmcp.com` portal.
+*   **OAuth2 (Cognito):** For user-centric flows and access to the developer portal features, BondMCP utilizes AWS Cognito. Authenticated users receive JWTs (ID and Access Tokens) which should be sent as a Bearer token in the `Authorization` HTTP header for relevant API calls. Detailed OAuth2 flow information is available via the Cognito User Pool configuration and the developer portal at `api.bondmcp.com`.
 
 ### Key Endpoints Overview
 The BondMCP API, as defined in `app/main.py`, currently exposes the following key endpoints:
@@ -304,13 +316,12 @@ These SDKs will provide convenient wrappers around the API endpoints, handle aut
 ## 6. Developer Guide
 
 ### Getting Started with the API
-1.  **Register:** Create a developer account on `my.bondmcp.com`.
-2.  **Get API Credentials:** Generate your API key from the `my.bondmcp.com` dashboard.
-3.  **Review Docs:** Familiarize yourself with the API on `api.bondmcp.com`.
-4.  **Use SDK (Recommended):** Check the [SDKs section](#5-software-development-kits-sdks).
-5.  **First API Call:** Test with `/health` or a simple data retrieval endpoint using your API key.
-    *Example cURL:* `curl -H "X-API-Key: YOUR_API_KEY" https://api.bondmcp.com/v1/some-endpoint`
-6.  **Explore Use Cases:** See [Illustrative Use Cases](#illustrative-use-cases).
+1.  **Register for an Account:** Visit the unified developer portal at `api.bondmcp.com` to create your developer account. This will give you access to the API documentation, interactive playground, API key management, and billing information.
+2.  **Obtain API Credentials:** Once registered and logged in, navigate to the API key management section within your `api.bondmcp.com` dashboard to generate your API key.
+3.  **Review API Documentation:** Familiarize yourself with the API endpoints, request/response schemas, and authentication methods detailed on `api.bondmcp.com`.
+4.  **Utilize SDKs (Recommended):** Check the [SDKs section](#5-software-development-kits-sdks) for available SDKs to simplify your integration.
+5.  **Make Your First API Call:** Test your setup by calling a simple endpoint, such as `/health`, or an endpoint relevant to your use case, using your generated API key. Example cURL for a generic endpoint: `curl -H "X-API-Key: YOUR_API_KEY" https://api.bondmcp.com/tools/call` (replace with actual tool name and arguments).
+6.  **Explore Use Cases & Playground:** Dive into the [Illustrative Use Cases](#illustrative-use-cases) and experiment with the interactive API playground on `api.bondmcp.com` to better understand the API's capabilities.
 
 ### Working with the Trust Layer
 BondMCP's Trust Layer ensures reliable AI insights through:
@@ -385,3 +396,21 @@ A detailed changelog will track updates, new features, fixes, and breaking chang
 *Self-Correction Note: The API endpoint details and schemas provided above are illustrative, based on the described functionalities of BondMCP. The definitive source for API endpoint structures, request/response bodies, and parameters is the OpenAPI specification generated by the actual BondMCP FastAPI application. The `openapi.json` file currently in the root of the `bondmcp_repo_clone` appears to be a placeholder or related to a different service (LangSmith). The next phase of documentation refinement will involve a deep parse of the BondMCP FastAPI application code (likely in `app/main.py` and `app/api/routers/` or similar) to extract and integrate its true OpenAPI schema into this documentation and the `api.bondmcp.com` portal.*
 
 *(This concludes the detailed population and initial refactoring of the README.md. The document now contains comprehensive, codebase-derived information across all major sections, with placeholders largely eliminated. It is ready for final review, validation against the live system, and integration of the definitive BondMCP OpenAPI schema.)*
+
+
+
+## Important Notice: Unification of Developer Portals and Deprecation of `my.bondmcp.com`
+
+**The `my.bondmcp.com` domain and its associated functionalities are being deprecated.**
+
+All developer-facing features previously available on `my.bondmcp.com`, including:
+*   API Sandbox / Developer Playground
+*   User Account Management (Registration, Login, Profile)
+*   API Key Generation and Management
+*   Billing and Subscription Management
+
+have been merged into the unified developer portal at **`https://api.bondmcp.com`**.
+
+This consolidation aims to provide a streamlined and comprehensive experience for all developers interacting with the BondMCP platform. Please update your bookmarks and workflows to use `https://api.bondmcp.com` for all your development needs, including accessing API documentation, managing your account and API keys, and utilizing the interactive API playground.
+
+We encourage all users to transition to `https://api.bondmcp.com` as soon as possible. The `my.bondmcp.com` domain will be phased out in the near future. Further announcements regarding the final decommissioning date will be made available on `https://api.bondmcp.com`.
