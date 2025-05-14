@@ -414,3 +414,39 @@ have been merged into the unified developer portal at **`https://api.bondmcp.com
 This consolidation aims to provide a streamlined and comprehensive experience for all developers interacting with the BondMCP platform. Please update your bookmarks and workflows to use `https://api.bondmcp.com` for all your development needs, including accessing API documentation, managing your account and API keys, and utilizing the interactive API playground.
 
 We encourage all users to transition to `https://api.bondmcp.com` as soon as possible. The `my.bondmcp.com` domain will be phased out in the near future. Further announcements regarding the final decommissioning date will be made available on `https://api.bondmcp.com`.
+
+
+
+## 10. Custom Domain Setup for GitBook (`docs.bondmcp.com`)
+
+This section details the steps taken to configure `docs.bondmcp.com` as a custom domain for the GitBook documentation site, its current status, and recommended next steps.
+
+### Goal
+The objective was to make the BondMCP project documentation, hosted on GitBook, accessible via the custom domain `docs.bondmcp.com`.
+
+### Method
+1.  **Initial API Attempt:** An initial attempt was made to configure the custom domain and retrieve DNS settings programmatically using the GitBook API. However, this approach was unsuccessful as the relevant API endpoints (`/v1/custom-hostnames/{hostname}`) returned a `403 Forbidden` error, indicating that the provided API token lacked the necessary permissions or that the endpoint requires internal GitBook user authentication.
+2.  **Manual Setup via GitBook UI:** Following the API limitations, the process reverted to the standard method of configuring custom domains through the GitBook web UI. The user confirmed they had initiated this process.
+
+### DNS Record Configuration (AWS Route 53)
+Based on the information provided by the user (assumed to be from the GitBook UI), the following DNS record was intended for `bondmcp.com`'s hosted zone in AWS Route 53:
+*   **Record Type:** `CNAME`
+*   **Record Name (Host):** `docs` (resulting in `docs.bondmcp.com.`)
+*   **Record Value (Target):** `2e9f9ce6a4-hosting.gitbook.io.`
+*   **TTL (Time To Live):** 300 seconds (or a similarly low value to facilitate quick updates).
+
+An attempt to create this record via AWS CLI indicated that the record already existed. This suggests it was either created manually by the user prior to this session, or an earlier automated attempt (not logged in the current context) was successful, or there was a delay in DNS record visibility during initial checks.
+
+### Current Status (as of May 14, 2025, ~10:45 UTC)
+*   **DNS Propagation:** **Successful.** Public DNS checks (using `dig @8.8.8.8 docs.bondmcp.com CNAME +short`) confirm that `docs.bondmcp.com` correctly resolves to `2e9f9ce6a4-hosting.gitbook.io.`.
+*   **SSL Certificate Provisioning:** **Pending / Failed.** Attempts to access `https://docs.bondmcp.com` via `curl` and browser result in SSL errors (specifically, `error:0A000410:SSL routines::sslv3 alert handshake failure` and `net::ERR_SSL_VERSION_OR_CIPHER_MISMATCH`). This indicates that while the DNS is correctly pointing to GitBook, the SSL certificate for the custom domain has not yet been successfully provisioned by GitBook.
+
+### Next Steps and Recommendations
+1.  **Wait for SSL Provisioning:** GitBook automatically provisions SSL certificates for custom domains once DNS records are correctly propagated. This process can take some time, often ranging from a few minutes to several hours (GitBook documentation suggests waiting at least 1 hour after DNS changes).
+2.  **Periodic Re-checks:** Periodically check the status of `https://docs.bondmcp.com` by:
+    *   Attempting to open it in a web browser (clearing cache if necessary).
+    *   Using the command: `curl -vI https://docs.bondmcp.com` to inspect the SSL handshake and HTTP headers.
+3.  **Verify GitBook Settings:** Double-check the custom domain settings within the GitBook UI to ensure there are no pending actions or error messages displayed there regarding the domain or SSL status.
+4.  **Cloudflare Check (If Applicable):** If Cloudflare is used as a proxy for `bondmcp.com` (in front of AWS Route 53), ensure that the DNS record for `docs.bondmcp.com` in Cloudflare is set to "DNS Only" (not proxied/orange-clouded), as per GitBook's troubleshooting guidelines for Cloudflare users. This was not explicitly mentioned as being part of the setup, but it's a common point of failure.
+5.  **Contact GitBook Support:** If the SSL certificate is not provisioned and the site remains inaccessible due to SSL errors after a reasonable waiting period (e.g., 12-24 hours), it is advisable to contact GitBook support for assistance, providing them with the domain name and the target CNAME value.
+
