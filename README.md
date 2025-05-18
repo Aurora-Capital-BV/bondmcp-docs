@@ -4,6 +4,15 @@
 
 Welcome to the BondMCP (Model Context Protocol + Trust Layer for Health AI) project. This documentation serves as the central hub for understanding the BondMCP platform, its architecture, features, APIs, and development guidelines. It is intended for developers, contributors, and anyone looking to integrate with or understand BondMCP.
 
+### Documentation Split
+
+The repository separates public-facing API references from internal documentation:
+
+- **/apidocs** – contains the Markdown files used to generate the external API docs.
+- **/docs** – holds internal and private documentation for maintainers.
+
+Public documentation at [docs.bondmcp.com](https://docs.bondmcp.com) is built from the content in `/apidocs`.
+
 ## Table of Contents
 
 1.  [Project Overview](#1-project-overview)
