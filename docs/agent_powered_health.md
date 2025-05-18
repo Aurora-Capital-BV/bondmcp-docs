@@ -166,4 +166,4 @@ To leverage BondMCP's agent-powered health capabilities:
 3. **Start with Basic Queries**: Begin with simple health questions to understand the system's capabilities
 4. **Integrate with Your Application**: Follow the integration guidelines to incorporate BondMCP into your workflow
 
-For technical details on implementing these capabilities, please refer to the [API Reference (OpenAPI)](../api-reference/README.md) section.
+For technical details on implementing these capabilities, please refer to the [API Reference (OpenAPI)](api-documentation/api-reference-openapi.md) section.

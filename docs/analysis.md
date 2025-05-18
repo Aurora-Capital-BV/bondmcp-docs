@@ -139,4 +139,4 @@ To begin leveraging BondMCP's Analysis capabilities:
 
 4. **Integrate with Your Application**: Follow the integration guidelines to incorporate BondMCP Analysis into your workflow.
 
-For technical details on implementing Analysis features, please refer to the [API Reference (OpenAPI)](../api-reference/README.md) section.
+For technical details on implementing Analysis features, please refer to the [API Reference (OpenAPI)](api-documentation/api-reference-openapi.md) section.

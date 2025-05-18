@@ -1,284 +1,252 @@
+---
 openapi: 3.0.0
 info:
   title: BondMCP API
-  version: v1
-  description: API for the BondMCP application, providing access to medical data and
-    AI-powered insights.
+  version: v1.0.0
+  description: |
+    API for the BondMCP (Model Context Protocol) project.
+    Provides access to health status, tool calling, and LLM functionality.
   contact:
-    email: support@bondmcp.com
+    name: BondMCP Team
+    url: https://bondmcp.com
+    email: info@auroracapital.nl
+
 servers:
-- url: https://api.bondmcp.com
-  description: Production server
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-security:
-- bearerAuth: []
+  - url: https://api.bondmcp.com
+    description: Production API Server
+
 paths:
   /health:
     get:
       summary: Health Check
-      description: Checks the health status of the API.
+      description: >-
+        Health check endpoint that returns the status of the API and its dependencies.
+        Used for monitoring and alerting.
+      operationId: getHealth
       responses:
         '200':
-          description: Healthy
+          description: Successful Response
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: healthy
-        '503':
-          description: Service Unavailable
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: unhealthy
-      tags:
-      - health
-  /users:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: "ok"
+                version: "1.0.0"
+                timestamp: "2025-05-17T20:00:00Z"
+                environment: "production"
+                services:
+                  database: "connected"
+                  cache: "connected"
+      security:
+        - ApiKeyAuth: []
+
+  /tools/call:
     post:
-      summary: Create User
-      description: Creates a new user account.
+      summary: Call Tool Endpoint
+      description: >-
+        Generic tool calling endpoint that dispatches the request to the appropriate
+        internal service. Requires API key authentication.
+      operationId: callTool
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - tool_name
+                - arguments
               properties:
-                username:
+                tool_name:
                   type: string
-                email:
-                  type: string
-                  format: email
-                password:
-                  type: string
-                  format: password
-      responses:
-        '201':
-          description: User created successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  userId:
-                    type: string
-                  username:
-                    type: string
-                  email:
-                    type: string
-                  message:
-                    type: string
-        '400':
-          description: Invalid input or user already exists
-      tags:
-      - users
-  /users/{userId}:
-    get:
-      summary: Get User Details
-      description: Retrieves details for a specific user.
-      parameters:
-      - name: userId
-        in: path
-        required: true
-        description: The ID of the user.
-        schema:
-          type: string
+                  description: Name of the tool to call
+                arguments:
+                  type: object
+                  description: Arguments for the tool
+                context:
+                  type: object
+                  nullable: true
+                  description: Optional context for the tool call
+            example:
+              tool_name: "example_tool"
+              arguments:
+                param1: "value1"
+                param2: "value2"
+              context:
+                user_id: "123"
       responses:
         '200':
-          description: User details retrieved successfully
+          description: Successful Response
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  userId:
-                    type: string
-                  username:
-                    type: string
-                  email:
-                    type: string
-                  createdAt:
-                    type: string
-                    format: date-time
-        '404':
-          description: User not found
-      tags:
-      - users
-  /data/upload:
+                $ref: '#/components/schemas/ToolCallResponse'
+              example:
+                request_id: "req_123456"
+                result: null
+                error:
+                  message: "Tool execution completed"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - ApiKeyAuth: []
+
+  /llm/ask:
     post:
-      summary: Upload Medical Data
-      description: Allows authenticated users to upload medical data.
+      summary: LLM Ask Endpoint
+      description: >-
+        Direct endpoint for querying the LLM ensemble. Returns the best response
+        from multiple models. Requires API key authentication.
+      operationId: llmAsk
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - prompt
               properties:
-                dataType:
+                prompt:
                   type: string
-                  example: blood_pressure
-                data:
-                  type: string
-                  description: Encrypted data string
-                timestamp:
-                  type: string
-                  format: date-time
-      responses:
-        '201':
-          description: Data uploaded successfully
-        '400':
-          description: Invalid data format or missing fields
-        '401':
-          description: Unauthorized
-      tags:
-      - data
-  /data/retrieve:
-    get:
-      summary: Retrieve Medical Data
-      description: Allows authenticated users to retrieve their medical data.
-      parameters:
-      - name: dataType
-        in: query
-        required: false
-        description: Filter by data type (e.g., "blood_pressure", "heart_rate").
-        schema:
-          type: string
-      - name: startDate
-        in: query
-        required: false
-        description: Filter data from this date (YYYY-MM-DD).
-        schema:
-          type: string
-          format: date
-      - name: endDate
-        in: query
-        required: false
-        description: Filter data up to this date (YYYY-MM-DD).
-        schema:
-          type: string
-          format: date
-      responses:
-        '200':
-          description: Medical data retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        dataType:
-                          type: string
-                        value:
-                          type: string
-                        timestamp:
-                          type: string
-                          format: date-time
-        '401':
-          description: Unauthorized
-        '404':
-          description: No data found
-      tags:
-      - data
-  /analysis/request:
-    post:
-      summary: Request AI Analysis
-      description: Submits user data for AI-powered analysis.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                userId:
-                  type: string
-                dataPoints:
+                  minLength: 1
+                  description: The prompt to send to the LLM
+                model_names:
                   type: array
                   items:
-                    type: object
-                    properties:
-                      metric:
-                        type: string
-                      value:
-                        type: string
-                      timestamp:
-                        type: string
-                        format: date-time
-                analysisType:
-                  type: string
-                  example: preventative_health_check
-      responses:
-        '202':
-          description: Request accepted for processing
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  requestId:
                     type: string
-                  status:
-                    type: string
-                    example: processing
-                  message:
-                    type: string
-        '400':
-          description: Invalid input data
-      tags:
-      - analysis
-  /analysis/results/{requestId}:
-    get:
-      summary: Get Analysis Results
-      description: Retrieves the results of a previously submitted analysis request.
-      parameters:
-      - name: requestId
-        in: path
-        required: true
-        description: The ID of the analysis request.
-        schema:
-          type: string
+                  nullable: true
+                  description: List of model names to use, defaults to all available
+                temperature:
+                  type: number
+                  maximum: 1
+                  nullable: true
+                  default: 0.7
+                  description: Sampling temperature
+                use_cache:
+                  type: boolean
+                  nullable: true
+                  default: true
+                  description: Whether to use cached responses if available
+            example:
+              prompt: "What is the capital of France?"
+              model_names: ["claude-3", "gpt-4"]
+              temperature: 0.7
+              use_cache: true
       responses:
         '200':
-          description: Analysis complete
+          description: Successful Response
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  requestId:
-                    type: string
-                  status:
-                    type: string
-                    example: completed
-                  summary:
-                    type: string
-                  recommendations:
-                    type: array
-                    items:
-                      type: string
-                  detailedReportLink:
-                    type: string
-                    format: url
-        '202':
-          description: Analysis still in progress
-        '404':
-          description: Request ID not found
-      tags:
-      - analysis
+                $ref: '#/components/schemas/LLMResponse'
+              example:
+                request_id: "req_789012"
+                response: "The capital of France is Paris."
+                model: "claude-3"
+                timestamp: "2025-05-17T20:05:00Z"
+                metadata:
+                  tokens: 15
+                  latency_ms: 250
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - ApiKeyAuth: []
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Current status of the API
+        version:
+          type: string
+          description: API version
+        timestamp:
+          type: string
+          description: Current timestamp
+        environment:
+          type: string
+          description: Deployment environment
+        services:
+          type: object
+          description: Status of dependent services
+          additionalProperties:
+            type: string
+
+    ToolCallResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+          description: Unique identifier for the request
+        result:
+          type: object
+          nullable: true
+          description: Result of the tool call if successful
+        error:
+          type: object
+          description: Error information if the tool call failed
+          additionalProperties:
+            type: string
+
+    LLMResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+          description: Unique identifier for the request
+        response:
+          type: string
+          description: LLM response text
+        model:
+          type: string
+          description: Model that generated the response
+        timestamp:
+          type: string
+          description: Timestamp of when the response was generated
+        metadata:
+          type: object
+          description: Additional metadata about the response
+          additionalProperties:
+            type: string
+
+    HTTPValidationError:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+
+    ValidationError:
+      type: object
+      properties:
+        loc:
+          type: array
+          items:
+            type: string
+          description: Location of the validation error
+        msg:
+          type: string
+          description: Error message
+        type:
+          type: string
+          description: Error type
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key

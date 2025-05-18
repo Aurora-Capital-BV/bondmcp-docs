@@ -56,6 +56,6 @@ BondMCP serves multiple stakeholders in the health technology ecosystem:
 
 This documentation provides comprehensive information about BondMCP, including its architecture, features, API reference, and integration guidelines. Whether you're a developer looking to integrate BondMCP into your application, a healthcare provider interested in its capabilities, or simply curious about the platform, you'll find valuable resources throughout these pages.
 
-To begin exploring BondMCP's capabilities, we recommend starting with the [Our Vision](vision.md) section to understand the platform's guiding principles, followed by the [Protocol Overview](protocol_overview.md) for a deeper technical understanding. Developers should pay special attention to the [API Documentation](../api-reference/README.md) section, which provides detailed information about integrating with BondMCP's services.
+To begin exploring BondMCP's capabilities, we recommend starting with the [Our Vision](vision.md) section to understand the platform's guiding principles, followed by the [Protocol Overview](protocol_overview.md) for a deeper technical understanding. Developers should pay special attention to the [API Documentation](api-documentation/api-reference-openapi.md) section, which provides detailed information about integrating with BondMCP's services.
 
 Welcome to the future of trusted health AI with BondMCP.

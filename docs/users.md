@@ -455,4 +455,4 @@ To help you get started quickly, we provide several sample applications that dem
    - Available on GitHub: [github.com/bondmcp/sample-mobile-companion](https://github.com/bondmcp/sample-mobile-companion)
    - Shows how to implement BondMCP in a mobile context with offline capabilities
 
-For technical details on implementing these features, please refer to the [API Reference (OpenAPI)](../api-reference/README.md) section.
+For technical details on implementing these features, please refer to the [API Reference (OpenAPI)](api-documentation/api-reference-openapi.md) section.

@@ -189,4 +189,4 @@ To begin leveraging BondMCP's Data Insights capabilities:
 
 4. **Integrate with Your Application**: Follow the integration guidelines to incorporate BondMCP insights into your workflow.
 
-For technical details on implementing Data Insights features, please refer to the [API Reference (OpenAPI)](../api-reference/README.md) section.
+For technical details on implementing Data Insights features, please refer to the [API Reference (OpenAPI)](api-documentation/api-reference-openapi.md) section.

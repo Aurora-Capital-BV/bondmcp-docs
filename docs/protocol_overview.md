@@ -199,4 +199,4 @@ To begin leveraging the MCP for your health application:
 3. **Start with Simple Integrations**: Begin with basic health data processing before moving to more complex workflows
 4. **Leverage Available SDKs**: Use the provided software development kits to accelerate integration
 
-For technical details on implementing the Model Context Protocol, please refer to the [API Reference (OpenAPI)](../api-reference/README.md) section.
+For technical details on implementing the Model Context Protocol, please refer to the [API Reference (OpenAPI)](api-documentation/api-reference-openapi.md) section.

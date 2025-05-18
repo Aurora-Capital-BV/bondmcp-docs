@@ -307,4 +307,4 @@ To leverage BondMCP's specialized health domain capabilities:
 
 4. **Integrate with Your Application**: Follow the integration guidelines to incorporate BondMCP's health domain expertise into your workflow.
 
-For technical details on implementing these capabilities, please refer to the [API Reference (OpenAPI)](../api-reference/README.md) section.
+For technical details on implementing these capabilities, please refer to the [API Reference (OpenAPI)](api-documentation/api-reference-openapi.md) section.
